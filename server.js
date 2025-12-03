@@ -3,16 +3,14 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Import routes
+// ROUTES
+const productRoutes = require("./routes/products.routes");
 const userRoutes = require("./routes/user.routes");
 
-// Gunakan routes
+app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
-
-app.get("/", (req, res) => {
-    res.send("Server berjalan!");
-});
 
 app.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);

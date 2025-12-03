@@ -1,55 +1,24 @@
-const User = require("../models/user.model");
+const jwt = require("jsonwebtoken");
 
-// =============================
-// GET ALL
-// =============================
-exports.getAllUsers = (req, res) => {
-    User.getAll((err, data) => {
-        if (err) res.status(500).send(err);
-        else res.send(data);
-    });
-};
+exports.login = (req, res) => {
+    const { email, password } = req.body;
 
-// =============================
-// GET BY ID
-// =============================
-exports.getUserById = (req, res) => {
-    User.getById(req.params.id, (err, data) => {
-        if (err) res.status(500).send(err);
-        else res.send(data);
-    });
-};
+    // TEMPORARY (tanpa database dulu)
+    const dummyEmail = "admin@mail.com";
+    const dummyPassword = "123456";
 
-// =============================
-// CREATE
-// =============================
-exports.createUser = (req, res) => {
-    User.create(req.body, (err, data) => {
-        if (err) res.status(500).send(err);
-        else res.send({
-            status: "success",
-            message: "User berhasil ditambahkan",
-            id: data
-        });
-    });
-};
+    if (email !== dummyEmail || password !== dummyPassword) {
+        return res.status(401).send({ message: "Email atau password salah" });
+    }
 
-// =============================
-// UPDATE
-// =============================
-exports.updateUser = (req, res) => {
-    User.update(req.params.id, req.body, (err, data) => {
-        if (err) res.status(500).send(err);
-        else res.send("User berhasil diupdate");
-    });
-};
+    const token = jwt.sign(
+        { email: email },
+        "SECRETKEY",
+        { expiresIn: "1h" }
+    );
 
-// =============================
-// DELETE
-// =============================
-exports.deleteUser = (req, res) => {
-    User.delete(req.params.id, (err, data) => {
-        if (err) res.status(500).send(err);
-        else res.send("User berhasil dihapus");
+    res.send({
+        message: "Login sukses",
+        token: token
     });
 };
